@@ -75,6 +75,23 @@ function prompter(cz, commit) {
       name: 'comment',
       message: 'Jira comment (optional):\n'
     },
+    {
+      type: 'input',
+      name: 'wbso',
+      message: 'WBSO billable (y/n):\n',
+      validate: function (input) {
+        if (input && (input !== 'y' || input !== 'n')) {
+          return 'Enter y or n';
+        } else {
+          return true;
+        }
+      }
+    },
+    {
+      type: 'input',
+      name: 'peer',
+      message: 'Peer programmers:\n'
+    },
   ]).then((answers) => {
     formatCommit(commit, answers);
   });
@@ -87,6 +104,8 @@ function formatCommit(commit, answers) {
     answers.workflow ? '#' + answers.workflow : undefined,
     answers.time ? '#time ' + answers.time : undefined,
     answers.comment ? '#comment ' + answers.comment : undefined,
+    answers.wbso ? '#wbso ' + answers.wbso : undefined,
+    answers.peer ? '#peer ' + answers.peer : undefined,
   ]).join(' '));
 }
 
