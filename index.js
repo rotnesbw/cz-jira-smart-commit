@@ -49,31 +49,12 @@ function prompter(cz, commit) {
     {
       type: 'input',
       name: 'issues',
-      message: 'Jira Issue ID(s) (required):\n',
-      validate: function(input) {
-        if (!input) {
-          return 'Must specify issue IDs, otherwise, just use a normal commit message';
-        } else {
-          return true;
-        }
-      }
-    },
-    {
-      type: 'input',
-      name: 'workflow',
-      message: 'Workflow command (testing, closed, etc.) (optional):\n',
-      validate: function(input) {
-        if (input && input.indexOf(' ') !== -1) {
-          return 'Workflows cannot have spaces in smart commits. If your workflow name has a space, use a dash (-)';
-        } else {
-          return true;
-        }
-      }
+      message: 'Jira Issue ID(s):\n',
     },
     {
       type: 'input',
       name: 'time',
-      message: 'Time spent (i.e. 3h 15m) (optional):\n'
+      message: 'Time spent (in hours):\n',
     },
     {
       type: 'input',
@@ -97,25 +78,54 @@ function prompter(cz, commit) {
       name: 'peer',
       message: 'Peer programmers:\n'
     },
+    {
+      type: 'input',
+      name: 'workflow',
+      message: 'Workflow command (testing, closed, etc.) (optional):\n',
+      validate: function(input) {
+        if (input && input.indexOf(' ') !== -1) {
+          return 'Workflows cannot have spaces in smart commits. If your workflow name has a space, use a dash (-)';
+        } else {
+          return true;
+        }
+      }
+    },
+    {
+      type: 'input',
+      name: 'confirm',
+      message: 'Confirm and commit? (y/n) \n',
+      validate: function(input) {
+        if (input && !(input === 'y' || input === 'n')) {
+          return 'Enter y or n';
+        } else {
+          return true;
+        }
+      }
+    },
   ]).then((answers) => {
     formatCommit(commit, answers);
   });
 }
 
 function formatCommit(commit, answers) {
-  let head = filter([
-    answers.issues,
-    answers.message,
-    answers.workflow ? '#' + answers.workflow : undefined,
-  ]).join(' ');
-  let body = filter([
-    answers.subject ? answers.subject : undefined,
-    answers.time ? '#time ' + answers.time : undefined,
-    answers.wbso ? '#wbso ' + answers.wbso : undefined,
-    answers.peer ? '#peer ' + answers.peer : undefined,
-    answers.comment ? '#comment ' + answers.comment : undefined,
-  ]).join('\n');
-  commit(head + '\n\n' + body);
+  if (answers.confirm === 'y') {
+    let head = filter([
+      answers.issues,
+      answers.message,
+      answers.workflow ? '#' + answers.workflow : undefined,
+      answers.time ? '#time ' + answers.time.trim() + 'h' : undefined,
+      answers.comment ? '#comment ' + answers.comment : undefined,
+    ]).join(' ');
+    let body = filter([
+      answers.subject ? answers.subject : undefined,
+      answers.wbso ? '#wbso ' + answers.wbso : undefined,
+      answers.peer ? '#peer ' + answers.peer : undefined,
+    ]).join('\n');
+    commit(head + '\n\n' + body);
+  }
+  else {
+    console.log("Commit cancelled.\n");
+  }
 }
 
 function filter(array) {
