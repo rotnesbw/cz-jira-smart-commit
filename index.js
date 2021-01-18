@@ -44,8 +44,7 @@ function prompter(cz, commit) {
     {
       type: 'input',
       name: 'message',
-      message: 'Commit message:\n',
-      default: ''
+      message: 'Commit message (optional):\n',
     },
     {
       type: 'input',
@@ -56,8 +55,17 @@ function prompter(cz, commit) {
       type: 'input',
       name: 'time',
       message: 'Time spent (in hours):\n',
-      default: '0',
-      filter: Number
+      validate: function (input) {
+        if (input) {
+          if (Number.isInteger(input)) {
+            return true;
+          } else {
+            return 'Please only insert the number of hours (integer)';
+          }
+        } else {
+          return true;
+        }
+      }
     },
     {
       type: 'input',
@@ -65,16 +73,10 @@ function prompter(cz, commit) {
       message: 'Jira comment (optional):\n'
     },
     {
-      type: 'input',
+      type: 'confirm',
       name: 'wbso',
-      message: 'WBSO billable (y/n):\n',
-      validate: function (input) {
-        if (input && !(input === 'y' || input === 'n')) {
-          return 'Enter y or n';
-        } else {
-          return true;
-        }
-      }
+      message: 'WBSO billable?\n',
+      default: false
     },
     {
       type: 'input',
@@ -115,7 +117,7 @@ function formatCommit(commit, answers) {
     ]).join(' ');
     let body = filter([
       answers.message ? answers.message : undefined,
-      answers.wbso ? '#wbso ' + answers.wbso : undefined,
+      answers.wbso ? '#wbso yes' : '#wbso no',
       answers.peer ? '#peer ' + answers.peer : undefined,
     ]).join('\n');
     commit(head + '\n\n' + body);
