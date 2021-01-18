@@ -45,6 +45,7 @@ function prompter(cz, commit) {
       type: 'input',
       name: 'message',
       message: 'Commit message:\n',
+      default: ''
     },
     {
       type: 'input',
@@ -55,6 +56,8 @@ function prompter(cz, commit) {
       type: 'input',
       name: 'time',
       message: 'Time spent (in hours):\n',
+      default: '0',
+      filter: Number
     },
     {
       type: 'input',
@@ -91,16 +94,10 @@ function prompter(cz, commit) {
       }
     },
     {
-      type: 'input',
+      type: 'confirm',
       name: 'confirm',
-      message: 'Confirm and commit? (y/n) \n',
-      validate: function(input) {
-        if (input && !(input === 'y' || input === 'n')) {
-          return 'Enter y or n';
-        } else {
-          return true;
-        }
-      }
+      message: 'Confirm and commit? \n',
+      default: false
     },
   ]).then((answers) => {
     formatCommit(commit, answers);
@@ -108,16 +105,16 @@ function prompter(cz, commit) {
 }
 
 function formatCommit(commit, answers) {
-  if (answers.confirm === 'y') {
+  if (answers.confirm) {
     let head = filter([
       answers.issues,
-      answers.message,
+      answers.subject,
       answers.workflow ? '#' + answers.workflow : undefined,
       answers.time ? '#time ' + answers.time.trim() + 'h' : undefined,
       answers.comment ? '#comment ' + answers.comment : undefined,
     ]).join(' ');
     let body = filter([
-      answers.subject ? answers.subject : undefined,
+      answers.message ? answers.message : undefined,
       answers.wbso ? '#wbso ' + answers.wbso : undefined,
       answers.peer ? '#peer ' + answers.peer : undefined,
     ]).join('\n');
