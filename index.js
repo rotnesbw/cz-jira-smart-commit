@@ -31,15 +31,20 @@ function prompter(cz, commit) {
   inquirer.prompt([
     {
       type: 'input',
-      name: 'message',
-      message: 'GitHub commit message (required):\n',
+      name: 'subject',
+      message: 'Commit subject (required):\n',
       validate: function(input) {
         if (!input) {
-          return 'empty commit message';
+          return 'Empty subject';
         } else {
           return true;
         }
       }
+    },
+    {
+      type: 'input',
+      name: 'message',
+      message: 'Commit message:\n',
     },
     {
       type: 'input',
@@ -98,15 +103,19 @@ function prompter(cz, commit) {
 }
 
 function formatCommit(commit, answers) {
-  commit(filter([
-    answers.message,
+  let head = filter([
     answers.issues,
+    answers.message,
     answers.workflow ? '#' + answers.workflow : undefined,
+  ]).join(' ');
+  let body = filter([
+    answers.subject ? answers.subject : undefined,
     answers.time ? '#time ' + answers.time : undefined,
-    answers.comment ? '#comment ' + answers.comment : undefined,
     answers.wbso ? '#wbso ' + answers.wbso : undefined,
     answers.peer ? '#peer ' + answers.peer : undefined,
-  ]).join(' '));
+    answers.comment ? '#comment ' + answers.comment : undefined,
+  ]).join('\n');
+  commit(head + '\n\n' + body);
 }
 
 function filter(array) {
