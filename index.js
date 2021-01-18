@@ -80,7 +80,7 @@ function prompter(cz, commit) {
       name: 'wbso',
       message: 'WBSO billable (y/n):\n',
       validate: function (input) {
-        if (input && (input !== 'y' || input !== 'n')) {
+        if (input && !(input === 'y' || input === 'n')) {
           return 'Enter y or n';
         } else {
           return true;
