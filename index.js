@@ -57,7 +57,7 @@ function prompter(cz, commit) {
       message: 'Time spent (in hours):\n',
       validate: function (input) {
         if (input) {
-          if (Number.isInteger(input)) {
+          if (Number.isInteger(parseInt(input))) {
             return true;
           } else {
             return 'Please only insert the number of hours (integer)';
