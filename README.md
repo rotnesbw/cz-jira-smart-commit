@@ -1,52 +1,18 @@
-# cz-jira-smart-commit
+### Installation and usage
 
-A commitizen adapter for [Jira smart commits](https://confluence.atlassian.com/display/FISHEYE/Using+smart+commits).
-
-![Screenshot](other/screenshot.png)
-
-## Usage
-
-### Global Installation
-
-For a quick global installation of the plugin, simply run the `install.sh` script present in this repo:
-
+Install the package globally in your machine:
 ```
-chmod +x install.sh
-
-./install.sh
+npm i -g Bannerwise/cz-jira-smart-commit#master
 ```
 
-### Add this adapter
-
-Install this adapter
-
+On the repo you wanna commit, create a file `.cz.json` with the following content:
 ```
-npm install cz-jira-smart-commit
-```
-
-Reference it in your `.cz.json` of your project
-
-```json
 {
-  "path": "node_modules/cz-jira-smart-commit/"
+  "path": "/Users/irotnes/.nvm/versions/node/v15.5.0/lib/node_modules/cz-jira-smart-commit"
 }
 ```
+Replace `irotnes` with your user and make sure you are pointing to the correct installation folder (check your node version!)
 
-or use commitizen to init
-```
-commitizen init cz-jira-smart-commit
-```
+Once that's done, you can commit to a repo by running `git cz` in the project root.
 
-
-### Day to day work
-
-Instead of `git commit -m 'Your message'`, you type: `git cz` with this adapter and it prompts you for:
-
-- commit message
-- Jira Issue Key(s)
-- Workflow command
-- Time Spent
-- Comment
-
-And generates your commit based on that.
 
